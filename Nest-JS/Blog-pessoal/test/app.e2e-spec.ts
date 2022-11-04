@@ -2,14 +2,15 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
-import {TypeOrmModule} from '@nestjs/typeorm';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
-describe('teste de modulos usuarios e auth (e2e)', () => {
+describe('Teste de Módulos Usuario e Auth (e2e)', () => {
+
   let token: any;
-  let usuarioId:any;
+  let usuarioId: any;
   let app: INestApplication;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [TypeOrmModule.forRoot({
         type: 'mysql',
@@ -19,11 +20,10 @@ describe('teste de modulos usuarios e auth (e2e)', () => {
         password: 'root',
         database: 'db_blogpessoal_test',
         autoLoadEntities: true,
-        synchronize: true, 
+        synchronize: true,
         logging: false,
         dropSchema: true
       }),
-
         AppModule],
     }).compile();
 
@@ -35,15 +35,16 @@ describe('teste de modulos usuarios e auth (e2e)', () => {
     await app.close()
   })
 
+
   it('01 - Deve Cadastrar Usuario', async () => {
     const resposta = await request(app.getHttpServer())
-    .post('usuario/cadastrar')
-    .send({
-      nome: 'Gabriel',
-      usuario: 'gabrielalvesoares@hotmail.com',
-      senha: '12345678',
-      foto: ''
-    });
+      .post('/usuario/cadastrar')
+      .send({
+        nome: 'Root',
+        usuario: 'root@root.com',
+        senha: 'rootroot',
+        foto: ''
+      });
     expect(201)
     usuarioId = resposta.body.id
   })
@@ -52,8 +53,8 @@ describe('teste de modulos usuarios e auth (e2e)', () => {
     const resposta = await request(app.getHttpServer())
       .post('/auth/logar')
       .send({
-        usuario: 'gabrielalvesoares@hotmail.com',
-        senha: '12345678',
+        usuario: 'root@root.com',
+        senha: 'rootroot',
       })
     expect(200)
 
@@ -63,11 +64,11 @@ describe('teste de modulos usuarios e auth (e2e)', () => {
 
   it('03 - Não Deve Duplicar o Usuario', async () => {
     return request(app.getHttpServer())
-      .post('/usuarios/cadastrar')
+      .post('/usuario/cadastrar')
       .send({
-        nome: 'Gabriel',
-        usuario: 'gabrielalvesoares@hotmail.com',
-        senha: '12345678',
+        nome: 'Root',
+        usuario: 'root@root.com',
+        senha: 'rootroot',
         foto: ''
 
       })
@@ -76,7 +77,7 @@ describe('teste de modulos usuarios e auth (e2e)', () => {
 
   it('04 - Deve Listar todos os usuarios', async () => {
     return request(app.getHttpServer())
-      .get('/usuarios/all')
+      .get('/usuario/all')
       .set('Authorization', `${token}`)
       .send({})
       .expect(200)
@@ -84,7 +85,7 @@ describe('teste de modulos usuarios e auth (e2e)', () => {
 
   it('05 - Deve Atualizar um Usuario', async () => {
     return request(app.getHttpServer())
-      .put('/usuarios/atualizar')
+      .put('/usuario/atualizar')
       .set('Authorization', `${token}`)
       .send({
         id: usuarioId,
@@ -94,10 +95,9 @@ describe('teste de modulos usuarios e auth (e2e)', () => {
         foto: ''
       })
       .expect(200)
-      .then(resposta =>{
+      .then(resposta => {
         expect("Jorginho").toEqual(resposta.body.nome)
       });
   });
-
 
 });

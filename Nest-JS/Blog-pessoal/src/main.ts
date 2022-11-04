@@ -1,22 +1,21 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // const config = new DocumentBuilder()
-  //   .setTitle('Blog Pessoal')
-  //   .setDescription('Projeto do Blog Pessoal')
-  //   .setContact('Generation Brasil', 'brazil.generation.org', 'gabrielalvesoares@hotmail.com')
-  //   .setVersion('1.0')
-  //   .addBearerAuth()
-  //   .build()
+  const config = new DocumentBuilder()
+    .setTitle('Blog Pessoal')
+    .setDescription('Projeto do Blog Pessoal')
+    .setContact('Gabriel Soares Alves', 'https://github.com/Gabrielsoaresdm', 'gabrielalvesoares@hotmail.com')
+    .setVersion('1.0')
+    .addBearerAuth()
+    .build()
     
-  //   const document = SwaggerModule.createDocument(app, config)
-  //   SwaggerModule.setup('/swagger', app, document)
-
-
+    const document = SwaggerModule.createDocument(app, config)
+    SwaggerModule.setup('/swagger', app, document)
 
 
   process.env.TZ = '-03:00'

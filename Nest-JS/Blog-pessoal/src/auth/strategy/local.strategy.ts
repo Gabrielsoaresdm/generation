@@ -8,14 +8,14 @@ import { AuthService } from "../service/auth.service";
 
         constructor (private authService: AuthService){
             super({
-                    usernamefield: 'usuario',
-                    passwordfield: 'senha'
+                    usernameField: 'usuario',
+                    passwordField: 'senha'
             })
         }
 
-        async validate(username: string, password: string): Promise<any>{
-            const user = await this.authService.validarUsuario
-            if(!user){
+        async validate(username: string, password: string): Promise<any> {
+            const user = await this.authService.validarUsuario(username, password)
+            if (!user) {
                 throw new UnauthorizedException();
             }
             return user;
